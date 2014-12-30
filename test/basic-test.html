@@ -1,0 +1,73 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>seed-element</title>
+
+  <script src="../../webcomponentsjs/webcomponents.min.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <!-- Step 1: import the element to test -->
+  <link rel="import" href="../ws-global-property.html">
+</head>
+<body>
+
+  <!-- You use the document as a place to set up your fixtures. -->
+  <ws-global-property propertyName="pageNum" value="5"></ws-global-property>
+  <ws-global-property propertyName="postArray" value='[{"name": "John"}, {"name": "Bob"}]'></ws-global-property>
+  <test-element id="testElm"></test-element>
+
+  <polymer-element name="test-element">
+    <template>
+      <ws-global-property id="pageNum" propertyName="pageNum" value="{{pageNum}}"></ws-global-property>
+      <p>This is page {{pageNum}}, now!</p>
+    </template>
+    <script>
+      Polymer("test-element",{
+         ready:function(){
+           //this.setPageNum(2);
+         },
+         setPageNum:function(num) {
+           this.pageNum = num;
+         },
+        getPageNum:function(){
+          return this.pageNum;
+        }
+      });
+    </script>
+  </polymer-element>
+
+
+  <script>
+    var myEl = document.querySelector('test-element');
+
+    suite('<ws-global-property>', function() {
+
+      test('get global value', function() {
+        assert.equal(myEl.getPageNum(), 5);
+      });
+
+      test('update global value', function() {
+
+        myEl.setPageNum(10);
+
+        //To-do this case should work, but the property observe take time to update
+        assert.equal(wsglobalproperty.pageNum, 10);
+        assert.equal(myEl.getPageNum(), 10);
+
+      });
+    });
+  </script>
+
+</body>
+</html>

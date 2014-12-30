@@ -1,0 +1,58 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!doctype html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>seed-element Demo</title>
+
+  <script src="../webcomponentsjs/webcomponents.min.js"></script>
+  <link rel="import" href="ws-global-property.html">
+
+</head>
+<body unresolved>
+
+  <p>An example of using <code>&lt;ws-global-property&gt;</code>:</p>
+
+  <ws-global-property propertyName="pageNum" value="2"></ws-global-property>
+  <demo-element></demo-element>
+  This is global variable: <span id="globalVar"></span>
+  <polymer-element name="demo-element">
+      <template>
+          <ws-global-property id="pageNum" propertyName="pageNum" value="{{pageNum}}"></ws-global-property>
+          <p>This is page {{pageNum}}, now!</p>
+      </template>
+      <script>
+          Polymer("demo-element",{
+              setPageNum:function(num) {
+                  this.pageNum = num;
+              },
+              getPageNum:function(){
+                  return this.pageNum;
+              }
+          });
+      </script>
+  </polymer-element>
+
+
+<script>
+
+    window.addEventListener('polymer-ready', function(e) {
+        var myEl = document.querySelector('demo-element');
+        myEl.setPageNum(15);
+        setTimeout(function(){
+            document.querySelector('#globalVar').innerHTML = wsglobalproperty.pageNum;
+        }, 10);
+
+    });
+</script>
+
+</body>
+</html>

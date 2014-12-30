@@ -1,0 +1,72 @@
+<!--
+    @license
+    Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+    This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+    The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+    The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+    Code distributed by Google as part of the polymer project is also
+    subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Element providing solution to no problem in particular.
+
+##### Example
+
+    <ws-global-property propertyName="foo" value="{{yourValue}}"></ws-global-property>
+
+@element ws-global-property
+@blurb Element providing solution to no problem in particular.
+@status alpha
+@homepage http://polymerlabs.github.io/seed-element
+-->
+<polymer-element name="ws-global-property" attributes="propertyName value">
+
+  <script>
+
+    Polymer({
+        /**
+        * The `propertyName` attribute sets the name of global variable
+        *
+        * @attribute propertyName
+        * @type string
+        * @default 'dummy'
+        */
+        propertyName: 'dummy',
+
+        /**
+        * `value` is the value to be stored by the global variable.
+        *
+        * @property value
+        * @type any kind
+        * @default null
+        */
+        value: null,
+
+        valueChanged: function(oldValue, newValue) {
+            wsglobalproperty[this.propertyName] = this.value;
+        },
+
+        setValue: function(val) {
+            this.value = val;
+            wsglobalproperty[this.propertyName] = this.val;
+        },
+
+        ready: function() {
+
+            if(typeof wsglobalproperty === "undefined"){
+                wsglobalproperty = {};
+            }
+            if(typeof wsglobalproperty[this.propertyName] === "undefined") {
+                wsglobalproperty[this.propertyName] = this.value;
+            }else{
+                this.value = wsglobalproperty[this.propertyName];
+            }
+
+        }
+    });
+
+  </script>
+
+</polymer-element>

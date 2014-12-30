@@ -1,0 +1,28 @@
+{
+  "name": "ws-global-property",
+  "version": "0.0.1",
+  "authors": [
+    "Will Leung <wun.leung@live.com>"
+  ],
+  "description": "Element providing global space to store variable",
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "global",
+    "variable"
+  ],
+  "main": "ws-global-property.html",
+  "license": "MIT",
+  "homepage": "https://github.com/willwish/ws-global-property/",
+  "ignore": [
+    "/.*",
+    "/tests/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.2"
+  },
+  "devDependencies": {
+    "web-component-tester": "Polymer/web-component-tester#^2.0.5"
+  }
+}
