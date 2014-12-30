@@ -21,7 +21,7 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://polymerlabs.github.io/seed-element
 -->
-<polymer-element name="ws-global-property" attributes="propertyName value">
+<polymer-element name="ws-global-property" attributes="propertyName value scope">
 
   <script>
 
@@ -36,6 +36,15 @@ Element providing solution to no problem in particular.
         propertyName: 'dummy',
 
         /**
+         * `scope` is the namespace of the global variable.
+         *
+         * @property scope
+         * @type string
+         * @default "g"
+         */
+        scope:"g",
+
+        /**
         * `value` is the value to be stored by the global variable.
         *
         * @property value
@@ -45,12 +54,12 @@ Element providing solution to no problem in particular.
         value: null,
 
         valueChanged: function(oldValue, newValue) {
-            wsglobalproperty[this.propertyName] = this.value;
+            wsglobalproperty[this.scope][this.propertyName] = this.value;
         },
 
         setValue: function(val) {
             this.value = val;
-            wsglobalproperty[this.propertyName] = this.val;
+            wsglobalproperty[this.scope][this.propertyName] = this.val;
         },
 
         ready: function() {
@@ -58,10 +67,17 @@ Element providing solution to no problem in particular.
             if(typeof wsglobalproperty === "undefined"){
                 wsglobalproperty = {};
             }
-            if(typeof wsglobalproperty[this.propertyName] === "undefined") {
-                wsglobalproperty[this.propertyName] = this.value;
+
+            if(typeof wsglobalproperty[this.scope] === "undefined"){
+                wsglobalproperty[this.scope] = {};
+            }
+
+
+
+            if(typeof wsglobalproperty[this.scope][this.propertyName] === "undefined") {
+                wsglobalproperty[this.scope][this.propertyName] = this.value;
             }else{
-                this.value = wsglobalproperty[this.propertyName];
+                this.value = wsglobalproperty[this.scope][this.propertyName];
             }
 
         }
