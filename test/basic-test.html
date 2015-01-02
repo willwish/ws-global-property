@@ -23,26 +23,40 @@
 <body>
 
   <!-- You use the document as a place to set up your fixtures. -->
-  <ws-global-property propertyName="pageNum" value="5"></ws-global-property>
+  <ws-global-property namespace="testElement" scope="item_a" propertyName="pageNum" value="5" defaultValue="5"></ws-global-property>
   <ws-global-property propertyName="postArray" value='[{"name": "John"}, {"name": "Bob"}]'></ws-global-property>
   <test-element id="testElm"></test-element>
 
   <polymer-element name="test-element">
     <template>
-      <ws-global-property id="pageNum" propertyName="pageNum" value="{{pageNum}}"></ws-global-property>
+      <ws-global-property namespace="{{namespace}}" scope="{{scope}}" propertyName="pageNum" value="{{pageNum}}" defaultValue="0"></ws-global-property>
       <p>This is page {{pageNum}}, now!</p>
     </template>
     <script>
       Polymer("test-element",{
+          namespace:"testElement",
+          scope: "item_a",
+
          ready:function(){
-           //this.setPageNum(2);
+           this.setPageNum(5);
          },
+
          setPageNum:function(num) {
            this.pageNum = num;
          },
+
         getPageNum:function(){
           return this.pageNum;
-        }
+        },
+
+          setNamespace:function(str){
+              this.namespace = str;
+          },
+
+          setScope:function(str){
+              this.scope = str;
+          }
+
       });
     </script>
   </polymer-element>
@@ -57,15 +71,97 @@
         assert.equal(myEl.getPageNum(), 5);
       });
 
-      test('update global value', function() {
-
+      test('update global value', function(done) {
         myEl.setPageNum(10);
-
         //To-do this case should work, but the property observe take time to update
-        assert.equal(wsglobalproperty.pageNum, 10);
-        assert.equal(myEl.getPageNum(), 10);
+          flush(function() {
+              assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+              assert.equal(myEl.getPageNum(), 10);
+              done();
+          });
 
       });
+
+        test('change scope and assign default', function(done) {
+            myEl.setScope("two");
+            //To-do this case should work, but the property observe take time to update
+            //assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+            flush(function () {
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 0);
+                assert.equal(myEl.getPageNum(), 0);
+                done();
+            });
+        });
+
+        test('change scope value', function(done) {
+            myEl.setScope("two");
+            myEl.setPageNum(2);
+
+            flush(function() {
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 2);
+                assert.equal(myEl.getPageNum(), 2);
+                done();
+            });
+        });
+
+        test('change scope back', function(done) {
+            myEl.setScope("item_a");
+
+            flush(function() {
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 2);
+                assert.equal(myEl.getPageNum(), 10);
+                done();
+            });
+        });
+
+        test('change namespace and assign default', function(done) {
+            myEl.setNamespace("anotherElement");
+            myEl.setScope("anotherTwo");
+            //To-do this case should work, but the property observe take time to update
+            //assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+            flush(function () {
+                assert.equal(wsglobalproperty.anotherElement.anotherTwo.pageNum, 0);
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 2);
+                assert.equal(myEl.getPageNum(), 0);
+                done();
+            });
+        });
+
+
+        test('change namespace value', function(done) {
+            myEl.setNamespace("anotherElement");
+            myEl.setScope("anotherTwo");
+            myEl.setPageNum(22);
+            //To-do this case should work, but the property observe take time to update
+            //assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+            flush(function () {
+                assert.equal(wsglobalproperty.anotherElement.anotherTwo.pageNum, 22);
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 2);
+                assert.equal(myEl.getPageNum(), 22);
+                done();
+            });
+        });
+
+
+        test('change namespace back', function(done) {
+            myEl.setNamespace("testElement");
+            myEl.setScope("item_a");
+
+            flush(function() {
+                assert.equal(wsglobalproperty.anotherElement.anotherTwo.pageNum, 22);
+                assert.equal(wsglobalproperty.testElement.item_a.pageNum, 10);
+                assert.equal(wsglobalproperty.testElement.two.pageNum, 2);
+                assert.equal(myEl.getPageNum(), 10);
+                done();
+            });
+        });
+
+
     });
   </script>
 

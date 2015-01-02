@@ -21,7 +21,7 @@ Element providing solution to no problem in particular.
 @status alpha
 @homepage http://polymerlabs.github.io/seed-element
 -->
-<polymer-element name="ws-global-property" attributes="propertyName value scope">
+<polymer-element name="ws-global-property" attributes="propertyName value scope namespace defaultValue">
 
   <script>
 
@@ -36,7 +36,17 @@ Element providing solution to no problem in particular.
         propertyName: 'dummy',
 
         /**
-         * `scope` is the namespace of the global variable.
+         * `namespace` is the namespace of the global variable.
+         *
+         * @property namespace
+         * @type string
+         * @default "g"
+         */
+        namespace:"g",
+
+
+        /**
+         * `scope` is the scope of the global variable in a namespace.
          *
          * @property scope
          * @type string
@@ -53,33 +63,56 @@ Element providing solution to no problem in particular.
         */
         value: null,
 
+        /**
+         * `defaultValue` is the value to be used, if the global variable is not defined.
+         *
+         * @property defaultValue
+         * @type any kind
+         * @default null
+         */
+        defaultValue: null,
+
+        observe: {
+            namespace: 'refreshVariable',
+            scope: 'refreshVariable'
+        },
+
+        refreshVariable:function(oldValue, newValue) {
+            this.loadValueFromGlobal();
+        },
+
         valueChanged: function(oldValue, newValue) {
-            wsglobalproperty[this.scope][this.propertyName] = this.value;
+            wsglobalproperty[this.namespace][this.scope][this.propertyName] = this.value;
         },
 
         setValue: function(val) {
             this.value = val;
-            wsglobalproperty[this.scope][this.propertyName] = this.val;
+            wsglobalproperty[this.namespace][this.scope][this.propertyName] = this.val;
         },
 
         ready: function() {
+            this.loadValueFromGlobal();
+        },
 
+        loadValueFromGlobal:function(){
             if(typeof wsglobalproperty === "undefined"){
                 wsglobalproperty = {};
             }
 
-            if(typeof wsglobalproperty[this.scope] === "undefined"){
-                wsglobalproperty[this.scope] = {};
+            if(typeof wsglobalproperty[this.namespace] === "undefined"){
+                wsglobalproperty[this.namespace] = {};
             }
 
+            if(typeof wsglobalproperty[this.namespace][this.scope] === "undefined"){
+                wsglobalproperty[this.namespace][this.scope] = {};
+            }
 
-
-            if(typeof wsglobalproperty[this.scope][this.propertyName] === "undefined") {
-                wsglobalproperty[this.scope][this.propertyName] = this.value;
+            if(typeof wsglobalproperty[this.namespace][this.scope][this.propertyName] === "undefined") {
+                wsglobalproperty[this.namespace][this.scope][this.propertyName] = this.defaultValue;
+                this.value = this.defaultValue;
             }else{
-                this.value = wsglobalproperty[this.scope][this.propertyName];
+                this.value = wsglobalproperty[this.namespace][this.scope][this.propertyName];
             }
-
         }
     });
 
